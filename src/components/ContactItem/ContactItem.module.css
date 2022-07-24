@@ -1,0 +1,22 @@
+.contacts__item:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.contacts__btn {
+  display: inline-block;
+  margin-left: 15px;
+  padding: 1px 2px;
+
+  font-size: 12px;
+
+  background-color: rgba(93, 174, 240, 0.9);
+  color: white;
+  border: 1px solid #757575;
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.contacts__btn:active {
+  background-color: rgba(7, 109, 192, 0.9);
+}

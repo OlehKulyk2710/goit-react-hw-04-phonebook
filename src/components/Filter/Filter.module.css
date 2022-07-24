@@ -1,0 +1,24 @@
+.filter__container {
+  margin-bottom: 15px;
+}
+
+.filter__title {
+  margin: 0;
+}
+
+.filter__input {
+  display: block;
+  margin-top: 5px;
+  padding: 3px;
+  padding-left: 5px;
+
+  outline: none;
+  border: 1px solid black;
+  border-radius: 4px;
+
+  color: #757575;
+}
+
+.filter__input:focus {
+  border: 1px solid rgba(33, 149, 241, 0.9);
+}
