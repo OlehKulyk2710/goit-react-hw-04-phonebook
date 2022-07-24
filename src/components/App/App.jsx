@@ -1,73 +1,65 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ContactList from 'components/ContactList/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
+import { Toaster } from 'react-hot-toast';
+
 import css from './App.module.css';
+import { useState, useEffect } from 'react';
 
 const LC_KEY = 'phonebook';
 
-class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-    error: null,
-  };
+const App = () => {
+  const [error, setError] = useState(null);
+  const [contacts, setContacts] = useState(checkLocalStorage);
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
+  useEffect(() => {
+    localStorage.setItem(LC_KEY, JSON.stringify(contacts));
+
+    if (contacts.length !== 0 && error) {
+      setError(null);
+    }
+  }, [contacts, error]);
+
+  function checkLocalStorage() {
     try {
       const dataFromLocStorage = JSON.parse(localStorage.getItem(LC_KEY));
-      dataFromLocStorage && this.setState({ contacts: dataFromLocStorage });
-    } catch (error) {
-      this.setState({ error: 'LocalStorage is corrupted :(' });
+      return dataFromLocStorage ? dataFromLocStorage : [];
+    } catch (err) {
+      setError('LocalStorage is corrupted :(');
+      return [];
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { contacts } = this.state;
-
-    if (prevState.contacts !== contacts) {
-      localStorage.setItem(LC_KEY, JSON.stringify(contacts));
-      this.setState({ error: null });
-    }
+  function updateContacts(contact) {
+    setContacts([...contacts, contact]);
   }
 
-  updateContacts = contact => {
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-    }));
-  };
+  function deleteContact(id) {
+    setContacts(prevState => prevState.filter(contact => contact.id !== id));
+  }
 
-  deleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id),
-    }));
-  };
-
-  handleFilterChange = value => {
-    this.setState({ filter: value });
-  };
-
-  render() {
-    const { contacts, filter, error } = this.state;
-    return (
+  return (
+    <>
       <div className={css.container}>
         <h1 className={css.title__phonebook}>Phonebook</h1>
-        <ContactForm
-          contacts={contacts}
-          onUpdateContacts={this.updateContacts}
-        />
+        <ContactForm contacts={contacts} onUpdateContacts={updateContacts} />
 
         <h2 className={css.title__contacts}>Contacts</h2>
-        <Filter filter={filter} onFilterChange={this.handleFilterChange} />
-        <ContactList
-          contacts={contacts}
-          filter={filter}
-          onDeleteContact={this.deleteContact}
-        />
+        <Filter filter={filter} onFilterChange={setFilter} />
+        {contacts.length !== 0 && (
+          <ContactList
+            contacts={contacts}
+            filter={filter}
+            onDeleteContact={deleteContact}
+          />
+        )}
         {error && <p>{error}</p>}
       </div>
-    );
-  }
-}
+      <Toaster position="top-left" />
+    </>
+  );
+};
 
 export default App;
