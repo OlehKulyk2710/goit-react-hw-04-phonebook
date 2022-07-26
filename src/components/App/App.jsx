@@ -39,7 +39,6 @@ const App = () => {
             onDeleteContact={deleteContact}
           />
         )}
-        {/* {error && <p>{error}</p>} */}
       </div>
       <Toaster position="top-left" />
     </>
